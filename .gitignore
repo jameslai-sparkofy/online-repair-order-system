@@ -1,0 +1,77 @@
+# PHP
+*.log
+*.tmp
+*.bak
+composer.phar
+vendor/
+.env
+.env.local
+.env.*.local
+
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/debug.log
+
+# Database
+*.sql
+*.sqlite
+*.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Build artifacts
+build/
+dist/
+.build/
+compiled/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Output files (use output/ directory instead)
+*.csv
+*.json
+*.xlsx
+output/
+
+# Logs
+*.log
+logs/
+log/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Plugin specific
+plugin-config.php
+debug.log
+error.log
