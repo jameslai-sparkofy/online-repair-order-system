@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增維修單 - 線上維修單管理系統</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <h1><i class="fas fa-tools"></i> 線上維修單管理系統</h1>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-list"></i> 維修單列表
+                </a>
+                <a href="new-order.html" class="nav-link active">
+                    <i class="fas fa-plus"></i> 新增維修單
+                </a>
+                <a href="workers.html" class="nav-link">
+                    <i class="fas fa-users"></i> 工務人員
+                </a>
+                <a href="sites.html" class="nav-link">
+                    <i class="fas fa-building"></i> 案場管理
+                </a>
+            </nav>
+            <div class="demo-badge">
+                <i class="fas fa-flask"></i> 測試版
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2 id="page-title"><i class="fas fa-plus-circle"></i> 新增維修單</h2>
+                <div class="page-actions">
+                    <a href="index.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <form id="repair-order-form" class="repair-order-form">
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-info-circle"></i> 基本資訊</h3>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="order-number">維修單號</label>
+                                <input type="text" id="order-number" class="form-control" readonly>
+                                <div class="form-hint">系統自動產生</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="order-date">日期 <span class="required">*</span></label>
+                                <input type="date" id="order-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="site-id">案場</label>
+                                <div class="input-group">
+                                    <select id="site-id" class="form-control">
+                                        <option value="">選擇案場</option>
+                                    </select>
+                                    <button type="button" id="add-site-btn" class="btn btn-outline">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="building">棟別</label>
+                                <input type="text" id="building" class="form-control" placeholder="例如：A棟">
+                            </div>
+                            <div class="form-group">
+                                <label for="floor">樓層</label>
+                                <input type="text" id="floor" class="form-control" placeholder="例如：3F">
+                            </div>
+                            <div class="form-group">
+                                <label for="unit">戶別</label>
+                                <input type="text" id="unit" class="form-control" placeholder="例如：301室">
+                            </div>
+                            <div class="form-group">
+                                <label for="worker-id">工務人員</label>
+                                <div class="input-group">
+                                    <select id="worker-id" class="form-control">
+                                        <option value="">選擇工務人員</option>
+                                    </select>
+                                    <button type="button" id="add-worker-btn" class="btn btn-outline">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">金額</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">NT$</span>
+                                    <input type="number" id="amount" class="form-control" step="0.01" min="0" placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">狀態</label>
+                                <select id="status" class="form-control">
+                                    <option value="pending">待處理</option>
+                                    <option value="in_progress">處理中</option>
+                                    <option value="completed">已完成</option>
+                                    <option value="cancelled">已取消</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Repair Reason Section -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-clipboard-list"></i> 維修原因</h3>
+                        </div>
+                        <div class="form-group">
+                            <label for="reason">維修原因 <span class="required">*</span></label>
+                            <textarea id="reason" class="form-control" rows="4" required 
+                                placeholder="請詳細描述需要維修的問題..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Photo Upload Section -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-camera"></i> 照片上傳</h3>
+                        </div>
+                        <div class="upload-section">
+                            <div class="upload-dropzone" id="photo-dropzone">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h4>拖拽照片到此處或點擊上傳</h4>
+                                    <p>支援 JPG, PNG, GIF 格式，最大 10MB</p>
+                                    <button type="button" class="btn btn-primary" id="select-photos-btn">
+                                        <i class="fas fa-folder-open"></i> 選擇照片
+                                    </button>
+                                </div>
+                                <input type="file" id="photo-input" multiple accept="image/*" style="display: none;">
+                            </div>
+                            <div id="photo-preview-container" class="photo-preview-container">
+                                <!-- 照片預覽將在這裡顯示 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Digital Signature Section -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-signature"></i> 數位簽名</h3>
+                        </div>
+                        <div class="signature-section">
+                            <div class="signature-container">
+                                <canvas id="signature-canvas" width="600" height="300"></canvas>
+                                <div class="signature-overlay" id="signature-overlay">
+                                    <i class="fas fa-signature"></i>
+                                    <p>請在此區域簽名</p>
+                                </div>
+                            </div>
+                            <div class="signature-controls">
+                                <button type="button" id="clear-signature" class="btn btn-secondary">
+                                    <i class="fas fa-eraser"></i> 清除簽名
+                                </button>
+                                <button type="button" id="save-signature" class="btn btn-success">
+                                    <i class="fas fa-save"></i> 儲存簽名
+                                </button>
+                            </div>
+                            <div id="signature-preview" class="signature-preview" style="display: none;">
+                                <h4>簽名預覽</h4>
+                                <img id="signature-image" src="" alt="Signature">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> 
+                                <span id="submit-text">建立維修單</span>
+                            </button>
+                            <button type="button" id="save-draft" class="btn btn-secondary">
+                                <i class="fas fa-file-alt"></i> 儲存草稿
+                            </button>
+                            <a href="index.html" class="btn btn-outline">
+                                <i class="fas fa-times"></i> 取消
+                            </a>
+                        </div>
+                        <div class="loading-indicator" id="loading-indicator" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> 處理中...
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section" id="preview-section" style="display: none;">
+                <div class="section-header">
+                    <h3><i class="fas fa-eye"></i> 預覽</h3>
+                    <button id="toggle-preview" class="btn btn-sm btn-outline">
+                        <i class="fas fa-eye-slash"></i> 隱藏預覽
+                    </button>
+                </div>
+                <div id="preview-content" class="preview-content">
+                    <!-- 預覽內容 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Add Site -->
+    <div id="add-site-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-building"></i> 新增案場</h3>
+                <button class="modal-close" onclick="closeModal('add-site-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-site-form">
+                    <div class="form-group">
+                        <label for="site-name">案場名稱 <span class="required">*</span></label>
+                        <input type="text" id="site-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="site-address">地址</label>
+                        <textarea id="site-address" class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('add-site-modal')" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button id="save-site-btn" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 儲存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Worker -->
+    <div id="add-worker-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> 新增工務人員</h3>
+                <button class="modal-close" onclick="closeModal('add-worker-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-worker-form">
+                    <div class="form-group">
+                        <label for="worker-name">姓名 <span class="required">*</span></label>
+                        <input type="text" id="worker-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="worker-email">電子郵件</label>
+                        <input type="email" id="worker-email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="worker-phone">電話</label>
+                        <input type="tel" id="worker-phone" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('add-worker-modal')" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button id="save-worker-btn" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 儲存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Success -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle text-success"></i> 成功</h3>
+                <button class="modal-close" onclick="closeModal('success-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="success-message"></div>
+                <div id="order-link-section" style="display: none;">
+                    <h4>公開確認連結</h4>
+                    <div class="input-group">
+                        <input type="text" id="public-link" class="form-control" readonly>
+                        <button type="button" id="copy-link-btn" class="btn btn-outline">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p class="form-hint">此連結可分享給工地人員進行確認</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="window.location.href='index.html'" class="btn btn-primary">
+                    <i class="fas fa-list"></i> 返回列表
+                </button>
+                <button onclick="window.location.href='new-order.html'" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> 繼續新增
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/mock-data.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script src="js/signature-pad.js"></script>
+    <script src="js/photo-upload.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initNewOrderPage();
+        });
+    </script>
+</body>
+</html>

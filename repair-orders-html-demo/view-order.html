@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>維修單詳情 - 線上維修單管理系統</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <h1><i class="fas fa-tools"></i> 線上維修單管理系統</h1>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-list"></i> 維修單列表
+                </a>
+                <a href="new-order.html" class="nav-link">
+                    <i class="fas fa-plus"></i> 新增維修單
+                </a>
+                <a href="workers.html" class="nav-link">
+                    <i class="fas fa-users"></i> 工務人員
+                </a>
+                <a href="sites.html" class="nav-link">
+                    <i class="fas fa-building"></i> 案場管理
+                </a>
+            </nav>
+            <div class="demo-badge">
+                <i class="fas fa-flask"></i> 測試版
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2><i class="fas fa-eye"></i> 維修單詳情</h2>
+                <div class="page-actions">
+                    <a href="index.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> 返回列表
+                    </a>
+                    <button id="edit-order-btn" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> 編輯
+                    </button>
+                    <button id="print-order-btn" class="btn btn-outline">
+                        <i class="fas fa-print"></i> 列印
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading-container" class="loading-container">
+                <i class="fas fa-spinner fa-spin"></i> 載入中...
+            </div>
+
+            <!-- Order Not Found -->
+            <div id="not-found-container" class="not-found-container" style="display: none;">
+                <div class="not-found-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>找不到維修單</h3>
+                    <p>指定的維修單不存在或已被刪除。</p>
+                    <a href="index.html" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+            </div>
+
+            <!-- Order Details Container -->
+            <div id="order-container" class="order-container" style="display: none;">
+                <!-- Order Header -->
+                <div class="order-header">
+                    <div class="order-title">
+                        <h3 id="order-number-display">維修單號：</h3>
+                        <div class="order-status">
+                            <span id="status-badge" class="status-badge"></span>
+                        </div>
+                    </div>
+                    <div class="order-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="order-date-display"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>建立於：<span id="created-at-display"></span></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-edit"></i>
+                            <span>最後更新：<span id="updated-at-display"></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Details Grid -->
+                <div class="details-grid">
+                    <!-- Basic Information -->
+                    <div class="detail-section">
+                        <div class="section-header">
+                            <h4><i class="fas fa-info-circle"></i> 基本資訊</h4>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label>案場</label>
+                                    <div id="site-display" class="detail-value">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <label>棟別</label>
+                                    <div id="building-display" class="detail-value">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <label>樓層</label>
+                                    <div id="floor-display" class="detail-value">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <label>戶別</label>
+                                    <div id="unit-display" class="detail-value">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <label>工務人員</label>
+                                    <div id="worker-display" class="detail-value">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <label>金額</label>
+                                    <div id="amount-display" class="detail-value">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Repair Reason -->
+                    <div class="detail-section">
+                        <div class="section-header">
+                            <h4><i class="fas fa-clipboard-list"></i> 維修原因</h4>
+                        </div>
+                        <div class="detail-content">
+                            <div id="reason-display" class="reason-text"></div>
+                        </div>
+                    </div>
+
+                    <!-- Photos -->
+                    <div class="detail-section" id="photos-section" style="display: none;">
+                        <div class="section-header">
+                            <h4><i class="fas fa-camera"></i> 照片</h4>
+                            <div class="section-actions">
+                                <button id="download-photos-btn" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-download"></i> 下載全部
+                                </button>
+                            </div>
+                        </div>
+                        <div class="detail-content">
+                            <div id="photos-gallery" class="photos-gallery">
+                                <!-- 照片將在這裡顯示 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Digital Signature -->
+                    <div class="detail-section" id="signature-section" style="display: none;">
+                        <div class="section-header">
+                            <h4><i class="fas fa-signature"></i> 數位簽名</h4>
+                            <div class="section-actions">
+                                <button id="download-signature-btn" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-download"></i> 下載簽名
+                                </button>
+                            </div>
+                        </div>
+                        <div class="detail-content">
+                            <div id="signature-display" class="signature-display">
+                                <img id="signature-image" src="" alt="Digital Signature">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Public Link -->
+                    <div class="detail-section">
+                        <div class="section-header">
+                            <h4><i class="fas fa-link"></i> 公開確認連結</h4>
+                        </div>
+                        <div class="detail-content">
+                            <div class="link-container">
+                                <div class="input-group">
+                                    <input type="text" id="public-link" class="form-control" readonly>
+                                    <button type="button" id="copy-link-btn" class="btn btn-outline">
+                                        <i class="fas fa-copy"></i> 複製
+                                    </button>
+                                    <button type="button" id="open-link-btn" class="btn btn-outline">
+                                        <i class="fas fa-external-link-alt"></i> 開啟
+                                    </button>
+                                </div>
+                                <div class="link-hint">
+                                    <i class="fas fa-info-circle"></i>
+                                    此連結可分享給工地人員進行確認和簽名
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History -->
+                    <div class="detail-section" id="history-section">
+                        <div class="section-header">
+                            <h4><i class="fas fa-history"></i> 操作記錄</h4>
+                        </div>
+                        <div class="detail-content">
+                            <div id="history-timeline" class="timeline">
+                                <!-- 操作記錄將在這裡顯示 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="action-group">
+                        <button id="status-update-btn" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> 更新狀態
+                        </button>
+                        <button id="add-note-btn" class="btn btn-secondary">
+                            <i class="fas fa-sticky-note"></i> 新增備註
+                        </button>
+                    </div>
+                    <div class="action-group">
+                        <button id="export-pdf-btn" class="btn btn-outline">
+                            <i class="fas fa-file-pdf"></i> 匯出 PDF
+                        </button>
+                        <button id="send-email-btn" class="btn btn-outline">
+                            <i class="fas fa-envelope"></i> 發送郵件
+                        </button>
+                    </div>
+                    <div class="action-group">
+                        <button id="delete-order-btn" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> 刪除
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Photo Viewer -->
+    <div id="photo-viewer-modal" class="modal modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-image"></i> 照片檢視</h3>
+                <button class="modal-close" onclick="closeModal('photo-viewer-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="photo-viewer">
+                    <div class="photo-nav">
+                        <button id="prev-photo" class="btn btn-outline">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="photo-counter">1 / 1</span>
+                        <button id="next-photo" class="btn btn-outline">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="photo-container">
+                        <img id="current-photo" src="" alt="Photo">
+                    </div>
+                    <div class="photo-actions">
+                        <button id="zoom-in" class="btn btn-outline">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button id="zoom-out" class="btn btn-outline">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button id="reset-zoom" class="btn btn-outline">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                        <button id="download-current-photo" class="btn btn-primary">
+                            <i class="fas fa-download"></i> 下載
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Status Update -->
+    <div id="status-update-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> 更新狀態</h3>
+                <button class="modal-close" onclick="closeModal('status-update-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="status-update-form">
+                    <div class="form-group">
+                        <label for="new-status">新狀態 <span class="required">*</span></label>
+                        <select id="new-status" class="form-control" required>
+                            <option value="pending">待處理</option>
+                            <option value="in_progress">處理中</option>
+                            <option value="completed">已完成</option>
+                            <option value="cancelled">已取消</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="status-note">備註</label>
+                        <textarea id="status-note" class="form-control" rows="3" 
+                            placeholder="請輸入狀態更新的原因或備註..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('status-update-modal')" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button id="confirm-status-update" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 更新狀態
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Note -->
+    <div id="add-note-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sticky-note"></i> 新增備註</h3>
+                <button class="modal-close" onclick="closeModal('add-note-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-note-form">
+                    <div class="form-group">
+                        <label for="note-content">備註內容 <span class="required">*</span></label>
+                        <textarea id="note-content" class="form-control" rows="4" required
+                            placeholder="請輸入備註內容..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('add-note-modal')" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button id="save-note-btn" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 儲存備註
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Delete Confirmation -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> 確認刪除</h3>
+                <button class="modal-close" onclick="closeModal('delete-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>您確定要刪除這個維修單嗎？</p>
+                <div id="delete-order-info"></div>
+                <p class="text-danger"><strong>注意：此操作無法復原！</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('delete-modal')" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button id="confirm-delete-btn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> 確認刪除
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/mock-data.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initViewOrderPage();
+        });
+    </script>
+</body>
+</html>
